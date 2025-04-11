@@ -86,6 +86,7 @@ function generateMockPrediction(formData: LoanFormData) {
   else if (formData.creditScore > 650) probability += 0.15;
   else if (formData.creditScore < 600) probability -= 0.2;
   
+  // Adjusted income to loan ratio for INR values
   const incomeToLoanRatio = formData.income / formData.loanAmount;
   if (incomeToLoanRatio > 0.3) probability += 0.2;
   else if (incomeToLoanRatio < 0.15) probability -= 0.2;

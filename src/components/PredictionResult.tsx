@@ -20,6 +20,15 @@ const PredictionResult = ({ prediction, formData }: PredictionResultProps) => {
   // Get recommended banks based on the prediction and form data
   const recommendedBanks = getRecommendedBanks(prediction, formData);
   
+  // Format currency values for display
+  const formatINR = (value: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
+  
   return (
     <div className="space-y-8 animate-slide-up">
       <div className="results-card">
@@ -105,7 +114,7 @@ function getRecommendedBanks(prediction: { approved: boolean; probability: numbe
       name: "First National Bank",
       logo: "https://placehold.co/200x100/0D9488/FFFFFF?text=FNB",
       interestRate: "5.75%",
-      maxLoanAmount: "$300,000",
+      maxLoanAmount: "₹25,00,000",
       score: 4.5,
     },
     {
@@ -113,7 +122,7 @@ function getRecommendedBanks(prediction: { approved: boolean; probability: numbe
       name: "City Credit Union",
       logo: "https://placehold.co/200x100/1E3A8A/FFFFFF?text=CCU",
       interestRate: "5.99%",
-      maxLoanAmount: "$250,000",
+      maxLoanAmount: "₹20,00,000",
       score: 4.3,
     },
     {
@@ -121,7 +130,7 @@ function getRecommendedBanks(prediction: { approved: boolean; probability: numbe
       name: "Premier Lending",
       logo: "https://placehold.co/200x100/2563EB/FFFFFF?text=PL",
       interestRate: "6.25%",
-      maxLoanAmount: "$400,000",
+      maxLoanAmount: "₹35,00,000",
       score: 4.1,
     }
   ];

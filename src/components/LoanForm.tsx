@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
+import { IndianRupee } from 'lucide-react';
 
 type LoanFormProps = {
   onSubmit: (formData: LoanFormData) => void;
@@ -26,8 +27,8 @@ export type LoanFormData = {
 
 const LoanForm = ({ onSubmit }: LoanFormProps) => {
   const [formData, setFormData] = useState<LoanFormData>({
-    income: 50000,
-    loanAmount: 200000,
+    income: 3500000, // Changed to equivalent in INR (approx)
+    loanAmount: 15000000, // Changed to equivalent in INR (approx)
     loanTerm: 15,
     creditScore: 700,
     employmentYears: 5,
@@ -78,27 +79,37 @@ const LoanForm = ({ onSubmit }: LoanFormProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>
-            <Label htmlFor="income">Annual Income ($)</Label>
-            <Input
-              id="income"
-              type="number"
-              value={formData.income}
-              onChange={(e) => handleNumberInput('income', e.target.value)}
-              className="mt-1"
-              min="0"
-            />
+            <Label htmlFor="income">Annual Income (₹)</Label>
+            <div className="relative mt-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <IndianRupee className="h-5 w-5 text-finance-darkGray" />
+              </div>
+              <Input
+                id="income"
+                type="number"
+                value={formData.income}
+                onChange={(e) => handleNumberInput('income', e.target.value)}
+                className="pl-10"
+                min="0"
+              />
+            </div>
           </div>
 
           <div>
-            <Label htmlFor="loanAmount">Loan Amount ($)</Label>
-            <Input
-              id="loanAmount"
-              type="number"
-              value={formData.loanAmount}
-              onChange={(e) => handleNumberInput('loanAmount', e.target.value)}
-              className="mt-1"
-              min="0"
-            />
+            <Label htmlFor="loanAmount">Loan Amount (₹)</Label>
+            <div className="relative mt-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <IndianRupee className="h-5 w-5 text-finance-darkGray" />
+              </div>
+              <Input
+                id="loanAmount"
+                type="number"
+                value={formData.loanAmount}
+                onChange={(e) => handleNumberInput('loanAmount', e.target.value)}
+                className="pl-10"
+                min="0"
+              />
+            </div>
           </div>
 
           <div>
