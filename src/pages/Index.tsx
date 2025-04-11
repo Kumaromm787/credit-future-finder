@@ -1,10 +1,13 @@
+
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import LoanForm, { LoanFormData } from '@/components/LoanForm';
 import PredictionResult from '@/components/PredictionResult';
 import HowItWorks from '@/components/HowItWorks';
+import CurrencyConverter from '@/components/CurrencyConverter';
 import { toast } from "sonner";
 import { Calculator } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [prediction, setPrediction] = useState<null | {
@@ -46,13 +49,26 @@ const Index = () => {
         </section>
 
         <section className="mb-12">
-          {!prediction && <LoanForm onSubmit={handleFormSubmit} />}
-          {prediction && submittedFormData && (
-            <PredictionResult 
-              prediction={prediction}
-              formData={submittedFormData}
-            />
-          )}
+          <Tabs defaultValue="loan-predictor" className="w-full">
+            <TabsList className="grid grid-cols-2 mb-6">
+              <TabsTrigger value="loan-predictor">Loan Predictor</TabsTrigger>
+              <TabsTrigger value="currency-converter">Currency Converter</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="loan-predictor">
+              {!prediction && <LoanForm onSubmit={handleFormSubmit} />}
+              {prediction && submittedFormData && (
+                <PredictionResult 
+                  prediction={prediction}
+                  formData={submittedFormData}
+                />
+              )}
+            </TabsContent>
+            
+            <TabsContent value="currency-converter">
+              <CurrencyConverter />
+            </TabsContent>
+          </Tabs>
         </section>
 
         <section className="mb-12">
