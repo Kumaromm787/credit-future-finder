@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import BankRecommendation from './BankRecommendation';
 import { LoanFormData } from './LoanForm';
+import FinancialTips from './FinancialTips';
 
 type PredictionResultProps = {
   prediction: {
@@ -28,6 +29,17 @@ const PredictionResult = ({ prediction, formData }: PredictionResultProps) => {
       maximumFractionDigits: 0,
     }).format(value);
   };
+
+  const getLoanTypeLabel = (type: string) => {
+    switch (type) {
+      case "home": return "Home Loan";
+      case "car": return "Car Loan";
+      case "education": return "Education Loan";
+      case "gold": return "Gold Loan";
+      case "mortgage": return "Mortgage";
+      default: return "Loan";
+    }
+  };
   
   return (
     <div className="space-y-8 animate-slide-up">
@@ -39,7 +51,7 @@ const PredictionResult = ({ prediction, formData }: PredictionResultProps) => {
             <AlertCircle className="h-16 w-16 text-red-500 mb-2" />
           )}
           <h2 className="text-2xl font-bold mb-1">
-            {approved ? 'Loan Approved!' : 'Loan Not Recommended'}
+            {approved ? `${getLoanTypeLabel(formData.loanType)} Approved!` : `${getLoanTypeLabel(formData.loanType)} Not Recommended`}
           </h2>
           <p className="text-finance-darkGray">
             {approved 
@@ -69,6 +81,8 @@ const PredictionResult = ({ prediction, formData }: PredictionResultProps) => {
             <Progress value={100 - riskScore} className={`h-2 ${getRiskProgressColor(riskScore)}`} />
           </div>
         </div>
+        
+        {!approved && <FinancialTips formData={formData} riskScore={riskScore} />}
       </div>
       
       {approved && (
@@ -104,11 +118,10 @@ function getRiskProgressColor(score: number): string {
   return "bg-red-500";
 }
 
-// Mock function to get recommended banks based on the prediction
+// Mock function to get recommended banks based on the prediction and loan type
 function getRecommendedBanks(prediction: { approved: boolean; probability: number; riskScore: number }, formData: LoanFormData) {
-  // This would typically call an API or use a more sophisticated algorithm
-  // For now, we're returning mock data
-  const baseBanks = [
+  // Common banks for all loan types
+  const commonBanks = [
     {
       id: 1,
       name: "First National Bank",
@@ -135,15 +148,74 @@ function getRecommendedBanks(prediction: { approved: boolean; probability: numbe
     }
   ];
   
+  // Specialized banks based on loan type
+  const specializedBanks = {
+    home: [
+      {
+        id: 4,
+        name: "Home Finance Ltd",
+        logo: "https://placehold.co/200x100/047857/FFFFFF?text=HFL",
+        interestRate: "5.50%",
+        maxLoanAmount: "₹50,00,000",
+        score: 4.7,
+      }
+    ],
+    car: [
+      {
+        id: 5,
+        name: "Auto Loan Group",
+        logo: "https://placehold.co/200x100/D97706/FFFFFF?text=ALG",
+        interestRate: "7.25%",
+        maxLoanAmount: "₹12,00,000",
+        score: 4.6,
+      }
+    ],
+    education: [
+      {
+        id: 6,
+        name: "Scholar Finance",
+        logo: "https://placehold.co/200x100/4F46E5/FFFFFF?text=SF",
+        interestRate: "4.75%",
+        maxLoanAmount: "₹15,00,000",
+        score: 4.8,
+      }
+    ],
+    gold: [
+      {
+        id: 7,
+        name: "Gold Asset Bank",
+        logo: "https://placehold.co/200x100/F59E0B/FFFFFF?text=GAB",
+        interestRate: "8.50%",
+        maxLoanAmount: "₹10,00,000",
+        score: 4.2,
+      }
+    ],
+    mortgage: [
+      {
+        id: 8,
+        name: "Mortgage Masters",
+        logo: "https://placehold.co/200x100/881337/FFFFFF?text=MM",
+        interestRate: "5.85%",
+        maxLoanAmount: "₹70,00,000",
+        score: 4.5,
+      }
+    ]
+  };
+  
+  // Get specialized banks for the loan type
+  const typeSpecificBanks = (specializedBanks as any)[formData.loanType] || [];
+  
   // If low credit score or high risk, adjust the interest rates
   if (formData.creditScore < 650 || prediction.riskScore > 50) {
-    return baseBanks.map(bank => ({
+    const adjustedBanks = [...typeSpecificBanks, ...commonBanks.slice(0, 1)].map(bank => ({
       ...bank,
       interestRate: (parseFloat(bank.interestRate) + 1.5) + "%"
     }));
+    return adjustedBanks;
   }
   
-  return baseBanks;
+  // Return a mix of specialized and common banks
+  return [...typeSpecificBanks, ...commonBanks.slice(0, 2)];
 }
 
 export default PredictionResult;

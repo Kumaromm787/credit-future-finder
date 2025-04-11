@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import { IndianRupee } from 'lucide-react';
+import { IndianRupee, Car, Home, GraduationCap, Banknote, Landmark } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 type LoanFormProps = {
   onSubmit: (formData: LoanFormData) => void;
@@ -23,6 +24,7 @@ export type LoanFormData = {
   maritalStatus: string;
   dependents: number;
   existingLoans: number;
+  loanType: string;
 };
 
 const LoanForm = ({ onSubmit }: LoanFormProps) => {
@@ -37,6 +39,7 @@ const LoanForm = ({ onSubmit }: LoanFormProps) => {
     maritalStatus: "single",
     dependents: 0,
     existingLoans: 0,
+    loanType: "home",
   });
 
   const [sliderValues, setSliderValues] = useState({
@@ -72,9 +75,45 @@ const LoanForm = ({ onSubmit }: LoanFormProps) => {
     onSubmit(formData);
   };
 
+  const getLoanIcon = (type: string) => {
+    switch (type) {
+      case "car": return <Car className="h-5 w-5" />;
+      case "home": return <Home className="h-5 w-5" />;
+      case "education": return <GraduationCap className="h-5 w-5" />;
+      case "gold": return <Banknote className="h-5 w-5" />;
+      case "mortgage": return <Landmark className="h-5 w-5" />;
+      default: return <Home className="h-5 w-5" />;
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="form-card animate-fade-in">
       <h2 className="text-2xl font-bold mb-6 gradient-heading">Loan Details</h2>
+      
+      <div className="mb-6">
+        <Label className="text-lg mb-3 block">Loan Type</Label>
+        <RadioGroup 
+          value={formData.loanType} 
+          onValueChange={(value) => handleInputChange('loanType', value)}
+          className="grid grid-cols-2 md:grid-cols-5 gap-3"
+        >
+          {[
+            {value: "home", label: "Home Loan", icon: <Home />},
+            {value: "car", label: "Car Loan", icon: <Car />},
+            {value: "education", label: "Education Loan", icon: <GraduationCap />},
+            {value: "gold", label: "Gold Loan", icon: <Banknote />},
+            {value: "mortgage", label: "Mortgage", icon: <Landmark />},
+          ].map((option) => (
+            <div key={option.value} className={`border rounded-lg p-3 cursor-pointer flex items-center gap-2 transition-all ${formData.loanType === option.value ? 'border-finance-teal bg-finance-lightBlue' : 'border-gray-200'}`}>
+              <RadioGroupItem value={option.value} id={option.value} className="sr-only" />
+              <label htmlFor={option.value} className="flex items-center gap-2 cursor-pointer w-full">
+                {option.icon}
+                <span>{option.label}</span>
+              </label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">

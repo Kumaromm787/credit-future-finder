@@ -98,6 +98,33 @@ function generateMockPrediction(formData: LoanFormData) {
   
   if (formData.education === "graduate") probability += 0.05;
   
+  // Adjust probability based on loan type
+  switch (formData.loanType) {
+    case "car":
+      // Car loans are generally easier to get
+      probability += 0.05;
+      break;
+    case "home":
+      // Home loans have stricter requirements
+      probability -= 0.02;
+      break;
+    case "education":
+      // Education loans may have special considerations
+      if (formData.age < 30) probability += 0.1;
+      break;
+    case "gold":
+      // Gold loans are secured by collateral
+      probability += 0.15;
+      break;
+    case "mortgage":
+      // Mortgages have stricter requirements
+      probability -= 0.05;
+      if (formData.employmentYears > 3) probability += 0.07;
+      break;
+    default:
+      break;
+  }
+  
   probability = Math.max(0, Math.min(1, probability));
   
   const riskScore = Math.round((1 - probability) * 100);
